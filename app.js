@@ -1,5 +1,6 @@
 // Importa las funciones necesarias para manejar tareas desde el backend
 import {getAllTasksByState, addTask, deleteTask, updateTask, updateTaskState} from './connectionBackend.js'
+import DOMPurify from 'dompurify';
 // Obtiene las tareas no completadas y completadas desde el backend
 let tasks = await getAllTasksByState(false);
 let tasksCompleted = await getAllTasksByState(true);
@@ -184,7 +185,7 @@ function getTaskId(id){
 function createEditFormHTML(editInfoContainer) {
     let id = getIdFromURL();
     let task = getTaskById(id);
-    editInfoContainer.innerHTML = `
+    editInfoContainer.innerHTML = DOMPurify.sanitize(`
         <div class="form-container">
             <button class="close-edit">✖️</button>
             <form id="editNameForm">
@@ -205,7 +206,7 @@ function createEditFormHTML(editInfoContainer) {
                 <button type="submit">Guardar Cambios</button>
             </form>
         </div>
-    `;
+    `);
 }
 
 // Función que obtiene el id de una tarea
@@ -215,7 +216,7 @@ function getTaskById(id){
 
 // Función que crea el HTML de una tarea específica
 function createTaskHTML(taskContainer, task, id){
-    taskContainer.innerHTML = `
+    taskContainer.innerHTML = DOMPurify.sanitize(`
     <button class="menu-btn menu-btn${id}">⋮</button>
     <div class="task-info task-info${id}">
         <p class="task-name${id}">${task.name}</p>
@@ -230,7 +231,7 @@ function createTaskHTML(taskContainer, task, id){
             <span>Completada</span>
         </label>
     </div>     
-`;
+`);
 }
 
 // Función para editar la información de una tarea con un ID específico
@@ -252,7 +253,7 @@ function addEventListenerToTaskInfo(taskInfo, id) {
         container.style.display="flex";
 
         // Genera el HTML para visualizar los detalles de la tarea
-        container.innerHTML = `
+        container.innerHTML = DOMPurify.sanitize(`
             <div class="visualize-task-info">
                 <button class="close-visualize">x</button>
                 <p>Nombre: ${task.name}</p>
@@ -260,7 +261,7 @@ function addEventListenerToTaskInfo(taskInfo, id) {
                 <p>Fecha límite: ${dateFormat(task.deadline)}</p>
                 <p>Prioridad: ${task.priority}</p>
             </div>
-        `;
+        `);
         
         // Agrega evento para cerrar el modal de visualización de la tarea
         const closeButton = document.querySelector(".close-visualize");
@@ -291,7 +292,7 @@ function hoursFormat(hours){
 // Muestra el formulario para agregar una nueva tarea
 function showAddTaskForm() {
     const addTaskInformation = document.querySelector(".add-task-info-container"); 
-    addTaskInformation.innerHTML = `
+    addTaskInformation.innerHTML = DOMPurify.sanitize(`
         <div class="task-form">
             <button class="close-add-task">✖️</button>
             <h2>Nueva Tarea</h2>
@@ -312,7 +313,7 @@ function showAddTaskForm() {
             </select>
             <button id="create-task-button">Crear</button>
         </div>
-    `;
+    `);
 
     // Mostrar el formulario
     addTaskInformation.classList.add("show");
